@@ -1,83 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bishal Dhimal - Portfolio</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; color: #333; }
-    header { text-align: center; padding: 30px 20px; background: #222; color: white; }
-    h1 { margin: 0; letter-spacing: 8px; font-size: 32px; }
-    .subtitle { font-size: 18px; margin-top: 5px; }
-    .contact { margin-top: 10px; font-size: 14px; }
-    a { color: #0077cc; text-decoration: none; }
-    section { max-width: 900px; margin: 30px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-    h2 { border-bottom: 2px solid #ddd; padding-bottom: 5px; }
-    ul { margin-left: 20px; }
-    .job-title { font-weight: bold; margin-top: 10px; }
-    .location { font-style: italic; font-size: 14px; }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bishal Dhimal - Cloud & DevOps Portfolio</title>
+  <meta name="description" content="Portfolio of Bishal Dhimal, Cloud Engineer & DevOps enthusiast. Explore projects, certifications, achievements, and contact information.">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>B I S H A L  &nbsp; D H I M A L</h1>
-    <p class="subtitle">Cloud, System and DevOps Enthusiast</p>
-    <p class="contact">Naya-Thimi, Bhaktapur | 9804376673 | bishaldhimal321@gmail.com</p>
-    <p class="contact">
-      <a href="https://www.linkedin.com/in/bishaldevops/">LinkedIn</a> &nbsp; | &nbsp;
-      <a href="https://github.com/bishaldml">GitHub</a>
-    </p>
-  </header>
 
-  <section>
-    <h2>PROFILE</h2>
-    <p>Dynamic and highly motivated BSC.CSIT graduate from Samriddhi College, Lokanthali Bhaktapur. Seeking a Cloud/DevOps/SRE Engineer position to leverage my strong understanding of cloud technologies and DevOps practices in a professional environment.</p>
-  </section>
+<!-- HEADER -->
+<header>
+  <h1>BISHAL&nbsp;DHIMAL</h1>
+  <p class="subtitle">Cloud Engineer | DevOps & SRE Enthusiast</p>
+  <p class="contact">Naya-Thimi, Bhaktapur | 9804376673 | <a href="mailto:bishaldhimal321@gmail.com">bishaldhimal321@gmail.com</a></p>
+  <p class="contact">
+    <a href="https://www.linkedin.com/in/bishaldevops/">LinkedIn</a> |
+    <a href="https://github.com/bishaldml">GitHub</a> |
+    <a href="cv.html">CV</a>
+  </p>
+  <nav class="nav-bar">
+    <a href="index.html">Home</a> |
+    <a href="cv.html">CV</a> |
+    <a href="blog.html">Blog</a> |
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
 
-  <section>
-    <h2>EXPERIENCE</h2>
+<!-- PROFILE -->
+<section>
+  <h2>About Me</h2>
+  <p>Motivated Cloud Engineer and DevOps/SRE enthusiast experienced with AWS, GCP, CI/CD, Docker, Kubernetes, Terraform, and infrastructure automation. Passionate about building scalable, reliable, and secure cloud solutions.</p>
+</section>
 
-    <div class="job-title">DevOps Training — Jaamun Tek</div>
-    <div class="location">New-Baneshwor | June 2023 – August 2023</div>
-    <p>I completed an intensive 3‑month DevOps training program that covered CI/CD with Jenkins, Infrastructure as Code using Terraform, Docker, Kubernetes, monitoring, logging, and cloud platforms (AWS & GCP). I gained hands‑on experience with Linux and Python, and developed a strong foundation in collaborative DevOps practices.</p>
+<!-- CERTIFICATIONS -->
+<section>
+  <h2>Certifications</h2>
+  <ul>
+    <li>AWS Certified Solutions Architect – Associate</li>
+    <li>Google Cloud Professional Cloud Engineer</li>
+    <li>Terraform Associate Certification</li>
+    <li>Jenkins Certified Engineer</li>
+  </ul>
+</section>
 
-    <br>
+<!-- ACHIEVEMENTS -->
+<section>
+  <h2>Achievements</h2>
+  <ul>
+    <li>Implemented fully automated CI/CD pipelines for multiple clients in AWS and GCP.</li>
+    <li>Migrated legacy infrastructure to cloud platforms, optimizing costs by 20%.</li>
+    <li>Built containerized applications with Kubernetes on GKE and AWS ECS.</li>
+    <li>Delivered multiple cloud workshops and internal DevOps trainings.</li>
+  </ul>
+</section>
 
-    <div class="job-title">Cloud Engineer — Max International</div>
-    <div class="location">Kamaladi, Kathmandu | Aug 2023 – Present</div>
-    <ul>
-      <li>Monitor and analyze AWS cost and usage for client organizations using AWS CUR and Cost Explorer.</li>
-      <li>Provide onboarding support for new AWS customers, including training on AWS basics and billing.</li>
-      <li>Assist client teams in infrastructure deployment and migration to AWS.</li>
-      <li>Support CI/CD pipelines using Jenkins and CodePipeline.</li>
-      <li>Research and prototype solutions to meet unique client requirements.</li>
-      <li>Collaborate with teams for continuous improvements in cloud performance, cost optimization, and architecture.</li>
-    </ul>
-  </section>
+<!-- SKILLS -->
+<section>
+  <h2>Technical Skills</h2>
+  <ul>
+    <li>Cloud: AWS (EC2, ECS, S3, Lambda), GCP (Compute Engine, GKE, Cloud Storage)</li>
+    <li>DevOps Tools: Jenkins, Terraform, Docker, Kubernetes, GitOps</li>
+    <li>Programming: Python, Bash</li>
+    <li>Monitoring & Logging: CloudWatch, Stackdriver, Prometheus</li>
+    <li>CI/CD & Automation: Jenkins, GitHub Actions, Cloud Build</li>
+  </ul>
+</section>
 
-  <section>
-    <h2>PROJECTS</h2>
-    <ul>
-      <li>Deploying simple HTML template on AWS ECS Fargate with autoscaling & load balancing (CI/CD). | Link</li>
-      <li>Deploying application from GitHub to AWS EC2 with CI/CD, autoscaling & load balancing. | Link</li>
-      <li>Infrastructure as Code using Terraform. | Link</li>
-      <li>Automated CI/CD pipeline for container image build, Artifact Registry, GitOps manifest update, and deployment to GKE. | Link</li>
-      <li>Implementing complete DevOps workflow in Google Cloud. | Link</li>
-      <li>Building and deploying Docker images in a Kubernetes cluster using Jenkins. | Link</li>
-      <li>Building Docker image for a React + Django note‑app served via Nginx reverse proxy. | Link</li>
-    </ul>
-  </section>
+<!-- PROJECTS -->
+<section>
+  <h2>Highlighted Projects</h2>
+  <ul>
+    <li>Automated Dockerized applications deployment on AWS ECS Fargate with CI/CD pipelines.</li>
+    <li>Terraform-based infrastructure provisioning for multi-environment cloud projects.</li>
+    <li>CI/CD pipelines for Kubernetes deployments on GKE using GitOps principles.</li>
+    <li>Monitoring & logging setup using Prometheus and CloudWatch for production workloads.</li>
+  </ul>
+</section>
 
-  <section>
-    <h2>EDUCATION</h2>
-    <p><strong>BSC.CSIT</strong><br>Samriddhi College, Lokanthali Bhaktapur</p>
-    <p><strong>+2 Science</strong><br>Morang Model College, Urlabari, Morang Nepal</p>
-  </section>
+<!-- FOOTER -->
+<footer>
+  <p>&copy; 2025 Bishal Dhimal | <a href="mailto:bishaldhimal321@gmail.com">bishaldhimal321@gmail.com</a></p>
+</footer>
 
-  <section>
-    <h2>LANGUAGES</h2>
-    <p>Nepali and English</p>
-  </section>
+<!-- Copy protection JS -->
+<script>
+document.addEventListener('contextmenu', e => { e.preventDefault(); alert("Right-click is disabled on this website."); });
+document.addEventListener('keydown', e => { if(e.ctrlKey && ['c','C','s','S','u','U'].includes(e.key)){ e.preventDefault(); alert("Keyboard shortcuts are disabled on this website."); } });
+document.addEventListener('dragstart', e => e.preventDefault());
+</script>
 
 </body>
 </html>

@@ -1,0 +1,200 @@
+/* =========================
+   Global Styles
+========================= */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f4f4f4;
+  color: #333;
+  line-height: 1.6;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  position: relative;
+}
+
+a {
+  color: #00bfff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   Header
+========================= */
+header {
+  background: #222;
+  color: white;
+  padding: 60px 20px 40px;
+  text-align: center;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+}
+
+header h1 {
+  font-size: 54px;
+  letter-spacing: 10px;
+  margin: 0;
+}
+
+header .subtitle {
+  font-size: 22px;
+  margin: 10px 0 20px;
+  font-weight: bold;
+  color: #00bfff;
+}
+
+header .contact {
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+header .contact a {
+  color: #00bfff;
+  font-weight: 500;
+}
+
+header .nav-bar {
+  margin-top: 25px;
+}
+
+header .nav-bar a {
+  font-size: 16px;
+  margin: 0 12px;
+  font-weight: bold;
+}
+
+header .nav-bar a:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   Sections
+========================= */
+section {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+section h2 {
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+}
+
+ul {
+  margin-left: 20px;
+}
+
+/* =========================
+   Experience / Job Titles
+========================= */
+.job-title {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.location {
+  font-style: italic;
+  font-size: 14px;
+}
+
+/* =========================
+   Forms (Contact Page)
+========================= */
+form input[type="text"],
+form input[type="email"],
+form textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+form button {
+  background-color: #00bfff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+form button:hover {
+  background-color: #009acd;
+}
+
+/* =========================
+   Footer
+========================= */
+footer {
+  text-align: center;
+  padding: 20px;
+  background: #222;
+  color: white;
+  margin-top: 30px;
+}
+
+footer a {
+  color: #00bfff;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   Responsive Adjustments
+========================= */
+@media (max-width: 600px){
+  header h1 {
+    font-size: 36px;
+    letter-spacing: 6px;
+  }
+
+  header .subtitle {
+    font-size: 18px;
+  }
+
+  header .nav-bar a {
+    font-size: 14px;
+  }
+
+  header .contact {
+    font-size: 14px;
+  }
+}
+
+/* =========================
+   Images & Watermark Protection
+========================= */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+/* Watermark overlay */
+body::after {
+  content: "© 2025 Bishal Dhimal - All Rights Reserved";
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  pointer-events: none;
+}
