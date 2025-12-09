@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bishal Dhimal - Contact</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>BISHAL&nbsp;DHIMAL</h1>
+  <p class="subtitle">Cloud Engineer | DevOps & SRE Enthusiast</p>
+  <nav class="nav-bar">
+    <a href="index.html">Home</a> |
+    <a href="cv.html">CV</a> |
+    <a href="blog.html">Blog</a> |
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<section>
+  <h2>Contact Me</h2>
+  <form id="contact-form">
+    <label>Name</label><br>
+    <input type="text" name="name" required><br><br>
+
+    <label>Email</label><br>
+    <input type="email" name="email" required><br><br>
+
+    <label>Message</label><br>
+    <textarea name="message" rows="5" required></textarea><br><br>
+
+    <button type="submit">Send Message</button>
+  </form>
+</section>
+
+<footer>
+  <p>&copy; 2025 Bishal Dhimal | <a href="mailto:bishaldhimal321@gmail.com">bishaldhimal321@gmail.com</a></p>
+</footer>
+
+<script>
+document.getElementById('contact-form').addEventListener('submit', function(e){
+  e.preventDefault();
+  alert("Thank you! Message sent successfully (demo).");
+});
+
+document.addEventListener('contextmenu', e => { e.preventDefault(); alert("Right-click is disabled on this website."); });
+document.addEventListener('keydown', e => { if(e.ctrlKey && ['c','C','s','S','u','U'].includes(e.key)){ e.preventDefault(); alert("Keyboard shortcuts are disabled on this website."); } });
+document.addEventListener('dragstart', e => e.preventDefault());
+</script>
+
+</body>
+</html>
