@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EC2 Monitoring Alerts - Blog | Bishal Dhimal</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .blog-content {
+        max-width: 900px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        line-height: 1.7;
+      }
+      .blog-content h1,
+      .blog-content h2,
+      .blog-content h3 {
+        margin-top: 30px;
+      }
+      .toc {
+        background: #f7f7f7;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+      }
+      .toc a {
+        display: block;
+        margin-bottom: 8px;
+        color: #0077cc;
+        text-decoration: none;
+      }
+      .toc a:hover {
+        text-decoration: underline;
+      }
+      pre {
+        background: #f0f0f0;
+        padding: 15px;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+      ul,
+      ol {
+        margin-left: 20px;
+      }
+      .note {
+        background: #e8f0fe;
+        padding: 10px;
+        border-left: 4px solid #0077cc;
+        margin: 15px 0;
+        border-radius: 4px;
+      }
+      .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        color: #0077cc;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      .back-btn:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="blog-content">
+      <h1>
+        How to Send Alerts When EBS Volume, CPU, or Other Metrics Reach Critical
+        Levels on EC2
+      </h1>
+      <p><em>By Bishal Dhimal | Dec 2025</em></p>
+
+      <div class="toc">
+        <strong>📌 Table of Contents</strong>
+        <a href="#cloudwatch-agent">1. Install & Configure CloudWatch Agent</a>
+        <a href="#iam-role">2. Create IAM Role for CloudWatch Agent</a>
+        <a href="#verify-metrics">3. Verify Metrics in CloudWatch</a>
+        <a href="#create-alarms">4. Create CloudWatch Alarms</a>
+        <a href="#best-practices">5. Best Practices for Alerts</a>
+        <a href="#ssm-automation">6. Optional: Automate with AWS SSM</a>
+        <a href="#references">References</a>
+      </div>
+
+      <h2 id="cloudwatch-agent">1️⃣ Install & Configure CloudWatch Agent</h2>
+      <p>
+        The CloudWatch Agent allows you to collect system-level metrics such as
+        CPU, memory, disk usage, and optionally network metrics. Follow these
+        steps:
+      </p>
+
+      <h3>Step 1: Install CloudWatch Agent</h3>
+      <pre><code># For Amazon Linux / RHEL
+sudo yum install -y amazon-cloudwatch-agent
+
+# For Ubuntu / Debian
+sudo apt-get install -y amazon-cloudwatch-agent
+</code></pre>
+
+      <h3>Step 2: Configure the Agent</h3>
+      <p>You can use the wizard or create a custom JSON config:</p>
+      <pre><code>sudo amazon-cloudwatch-agent-config-wizard</code></pre>
+      <p>Or define a custom configuration for metrics collection:</p>
+      <pre><code>cat &lt;&lt;EOF | sudo tee /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+{
+  "agent": {
+    "metrics_collection_interval": 60,
+    "logfile": "/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log"
+  },
+  "metrics": {
+    "namespace": "CWAgent",
+    "metrics_collected": {
+      "disk": {
+        "measurement": ["used_percent"],
+        "metrics_collection_interval": 60,
+        "resources": ["*"]
+      },
+      "mem": {
+        "measurement": ["mem_used_percent"],
+        "metrics_collection_interval": 60
+      },
+      "cpu": {
+        "measurement": ["cpu_usage_idle","cpu_usage_user","cpu_usage_system"],
+        "metrics_collection_interval": 60,
+        "totalcpu": true
+      },
+      "net": {
+        "measurement": ["bytes_sent","bytes_recv"],
+        "metrics_collection_interval": 60,
+        "resources": ["*"]
+      }
+    }
+  }
+}
+EOF</code></pre>
+
+      <p class="note">
+        💡 Tip: Collecting network and CPU breakdown metrics is optional but
+        helpful for detecting network spikes or CPU bottlenecks.
+      </p>
+
+      <h2 id="iam-role">2️⃣ Create IAM Role with Necessary Permissions</h2>
+      <p>
+        CloudWatch Agent needs permissions to report metrics and send alerts:
+      </p>
+      <ul>
+        <li>Create an IAM Role for the EC2 instance.</li>
+        <li>
+          Attach the following policies:
+          <ul>
+            <li>
+              <strong>CloudWatchAgentServerPolicy</strong> – allows publishing
+              metrics.
+            </li>
+            <li>
+              <strong>AmazonEC2ReadOnlyAccess</strong> – allows agent to read
+              EC2 metadata.
+            </li>
+            <li>
+              <strong>AmazonSSMManagedInstanceCore</strong> – required if using
+              SSM to manage multiple servers.
+            </li>
+            <li>
+              <strong>AmazonSNSFullAccess</strong> – required to send
+              notifications via SNS.
+            </li>
+          </ul>
+        </li>
+        <li>Attach the IAM role to your EC2 instance.</li>
+      </ul>
+
+      <h2 id="verify-metrics">3️⃣ Verify Metrics in CloudWatch</h2>
+      <p>After installing and starting the agent:</p>
+      <ol>
+        <li>
+          Go to <strong>AWS Console → CloudWatch → Metrics → CWAgent</strong>.
+        </li>
+        <li>
+          Check that the following metrics are reported:
+          <ul>
+            <li>Disk usage (used_percent)</li>
+            <li>Memory usage (mem_used_percent)</li>
+            <li>
+              CPU usage (cpu_usage_user, cpu_usage_system, cpu_usage_idle)
+            </li>
+            <li>Optional: Network traffic metrics</li>
+          </ul>
+        </li>
+        <li>
+          Ensure metrics update at the interval you configured (default 60
+          seconds).
+        </li>
+      </ol>
+
+      <h2 id="create-alarms">
+        4️⃣ Create CloudWatch Alarms for Critical Thresholds
+      </h2>
+
+      <h3>🔹 Alarm for EBS Volume Usage (≥ 80%)</h3>
+      <ol>
+        <li>
+          Navigate to <strong>CloudWatch → Alarms → Create Alarm</strong>.
+        </li>
+        <li>
+          Select metric:
+          <strong>CWAgent → disk_used_percent → choose EBS volume</strong>.
+        </li>
+        <li>Set threshold: <strong>≥ 80%</strong>.</li>
+        <li>
+          Configure actions:
+          <ul>
+            <li>Create or select an SNS topic.</li>
+            <li>Add email addresses or Lambda functions to automate alerts.</li>
+          </ul>
+        </li>
+        <li>Name the alarm and save.</li>
+      </ol>
+
+      <h3>🔹 Alarm for CPU Utilization (≥ 80%)</h3>
+      <ol>
+        <li>
+          Navigate to <strong>CloudWatch → Alarms → Create Alarm</strong>.
+        </li>
+        <li>
+          Select metric:
+          <strong>EC2 → Per-Instance Metrics → CPUUtilization</strong>.
+        </li>
+        <li>Set threshold: <strong>≥ 80%</strong>.</li>
+        <li>Configure actions via SNS.</li>
+        <li>Name the alarm and save.</li>
+      </ol>
+
+      <h3>🔹 Optional: Memory & Network Alarms</h3>
+      <p>
+        You can create alarms for memory usage or network bandwidth using
+        CWAgent metrics collected:
+      </p>
+      <pre><code>CWAgent → mem_used_percent
+CWAgent → net_bytes_sent
+CWAgent → net_bytes_recv</code></pre>
+
+      <h2 id="best-practices">5️⃣ Best Practices for Alerts</h2>
+      <ul>
+        <li>
+          Set multiple thresholds (e.g., warning at 70%, critical at 90%) for
+          proactive alerts.
+        </li>
+        <li>Combine with AWS SNS → Slack/Email for fast notifications.</li>
+        <li>
+          Use descriptive alarm names (e.g., EC2-WebServer1-CPU-80%) for
+          clarity.
+        </li>
+        <li>Regularly review metrics to avoid alert fatigue.</li>
+      </ul>
+
+      <h2 id="ssm-automation">
+        6️⃣ Optional: Automate Across Multiple Instances with SSM
+      </h2>
+      <ul>
+        <li>
+          Store your CloudWatch Agent JSON config in
+          <strong>SSM Parameter Store</strong>.
+        </li>
+        <li>
+          Deploy config to multiple EC2 instances:
+          <pre><code>sudo amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c ssm:AmazonCloudWatch-linux -s</code></pre>
+        </li>
+        <li>
+          This ensures uniform metric collection and alarm setup across
+          instances.
+        </li>
+      </ul>
+
+      <h2 id="references">References</h2>
+      <ul>
+        <li>
+          <a
+            href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/create-iam-roles-for-cloudwatch-agent.html"
+            target="_blank"
+            >CloudWatch IAM Roles</a
+          >
+        </li>
+        <li>
+          <a
+            href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/download-cloudwatch-agent-commandline.html"
+            target="_blank"
+            >Download CloudWatch Agent CLI</a
+          >
+        </li>
+      </ul>
+
+      <a class="back-btn" href="blog.html">← Back to Blogs</a>
+    </section>
+
+    <footer>
+      <p>
+        &copy; 2025 Bishal Dhimal |
+        <a href="mailto:bishaldhimal321@gmail.com">bishaldhimal321@gmail.com</a>
+      </p>
+    </footer>
+
+    <script>
+      document.addEventListener("contextmenu", (e) => e.preventDefault());
+      document.addEventListener("keydown", (e) => {
+        if (e.ctrlKey && ["c", "C", "s", "S", "u", "U"].includes(e.key))
+          e.preventDefault();
+      });
+      document.addEventListener("dragstart", (e) => e.preventDefault());
+    </script>
+  </body>
+</html>

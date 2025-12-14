@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AWS Database Migration Service (DMS) | Bishal Dhimal</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.7;
+        background: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+      .blog-content {
+        max-width: 900px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+      }
+      .blog-content h1,
+      .blog-content h2,
+      .blog-content h3 {
+        margin-top: 30px;
+        color: #222;
+      }
+      .toc {
+        background: #f7f7f7;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+      }
+      .toc a {
+        display: block;
+        margin-bottom: 8px;
+        color: #0077cc;
+        text-decoration: none;
+      }
+      .toc a:hover {
+        text-decoration: underline;
+      }
+      pre {
+        background: #f0f0f0;
+        padding: 15px;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+      code {
+        font-family: "Courier New", monospace;
+      }
+      .note {
+        background: #fff8c4;
+        border-left: 4px solid #ffcc00;
+        padding: 10px 15px;
+        margin: 15px 0;
+        border-radius: 5px;
+      }
+      .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        color: #0077cc;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      .back-btn:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="blog-content">
+      <h1>AWS Database Migration Service (DMS) – Production-Ready Guide</h1>
+      <p><em>By Bishal Dhimal | Dec 2025</em></p>
+
+      <div class="toc">
+        <strong>📌 Table of Contents</strong>
+        <a href="#planning">1. Planning Your Database Migration</a>
+        <a href="#schema">2. Schema & Code Migration</a>
+        <a href="#datatypes">3. Unsupported Data Types</a>
+        <a href="#scenarios">4. DMS Migration Scenarios</a>
+        <a href="#preparation">5. Preparation for Production Migration</a>
+        <a href="#migration-steps">6. Database Migration Steps</a>
+        <a href="#monitoring">7. Monitoring & Validation</a>
+        <a href="#best-practices">8. Best Practices</a>
+        <a href="#references">9. References</a>
+      </div>
+
+      <h2 id="planning">1️⃣ Planning Your Database Migration</h2>
+      <ul>
+        <li>
+          <strong>Source & Target Endpoints:</strong> Identify databases,
+          tables, and schemas. DMS supports table creation and primary keys, but
+          secondary indexes, foreign keys, and user accounts must be created
+          manually.
+        </li>
+        <li>
+          <strong>Network Connectivity:</strong> Ensure databases are reachable
+          via VPN, Direct Connect, or public endpoints with proper security
+          groups.
+        </li>
+        <li>
+          <strong>Replication Subnet Group:</strong> DMS replication instances
+          need subnets in at least two AZs for high availability.
+        </li>
+      </ul>
+
+      <h2 id="schema">2️⃣ Schema & Code Migration</h2>
+      <p>While DMS migrates data, schema and code migration is separate.</p>
+      <h3>Schema Migration:</h3>
+      <ul>
+        <li>Tables & columns</li>
+        <li>Primary & foreign keys</li>
+        <li>Indexes & constraints</li>
+      </ul>
+
+      <h3>Code Migration:</h3>
+      <ul>
+        <li>Stored procedures, functions, triggers, views</li>
+        <li>Packages/modules and custom scripts</li>
+      </ul>
+
+      <p><strong>Tools:</strong></p>
+      <ul>
+        <li>
+          <strong>AWS Schema Conversion Tool (SCT):</strong> Converts schemas
+          and code between different engines.
+        </li>
+        <li>
+          <strong>Native Tools (for same-engine migration):</strong> MySQL
+          Workbench, Oracle SQL Developer, pgAdmin
+        </li>
+      </ul>
+
+      <h2 id="datatypes">3️⃣ Unsupported Data Types & Transformations</h2>
+      <p>Plan for type conversions:</p>
+      <ul>
+        <li>NUMBER → BIGINT or DECIMAL</li>
+        <li>DATE → TIMESTAMP</li>
+        <li>Boolean → TINYINT or BOOLEAN</li>
+      </ul>
+      <div class="note">
+        💡 Use SCT to generate conversion scripts and manually adjust
+        unsupported items.
+      </div>
+
+      <h2 id="scenarios">4️⃣ AWS DMS Migration Scenarios</h2>
+      <table border="1" cellpadding="8" cellspacing="0" width="100%">
+        <tr>
+          <th>Source</th>
+          <th>Target</th>
+          <th>Notes</th>
+        </tr>
+        <tr>
+          <td>On-Prem MySQL</td>
+          <td>Amazon RDS MySQL</td>
+          <td>Full or incremental replication</td>
+        </tr>
+        <tr>
+          <td>Oracle</td>
+          <td>Aurora PostgreSQL</td>
+          <td>Heterogeneous migration; use SCT</td>
+        </tr>
+        <tr>
+          <td>RDS MySQL</td>
+          <td>S3 / Glacier</td>
+          <td>Data archiving and cost optimization</td>
+        </tr>
+      </table>
+
+      <h2 id="preparation">5️⃣ Preparation for Production Migration</h2>
+      <ul>
+        <li>Create replication subnet group (multi-AZ recommended).</li>
+        <li>Provision replication instance with sufficient CPU/memory.</li>
+        <li>Create source & target endpoints with secure access.</li>
+        <li>
+          Create DMS IAM roles:
+          <ul>
+            <li>dms-cloudwatch-log-role</li>
+            <li>dms-vpc-role</li>
+            <li>dms-access-for-endpoint (Redshift target)</li>
+          </ul>
+        </li>
+        <li>Test connectivity between endpoints before migration.</li>
+      </ul>
+
+      <h2 id="migration-steps">6️⃣ Database Migration Steps</h2>
+      <h3>6.1 Prepare Source Database (MySQL Example)</h3>
+      <pre><code>sudo apt update
+sudo apt install mysql-server -y
+sudo mysql_secure_installation
+sudo systemctl enable mysql
+sudo systemctl start mysql
+</code></pre>
+
+      <h4>Create a migration user:</h4>
+      <pre><code>CREATE USER 'migration_user'@'%' IDENTIFIED BY 'StrongPassword123';
+GRANT ALL PRIVILEGES ON *.* TO 'migration_user'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+</code></pre>
+
+      <h4>Create demo database & tables:</h4>
+      <pre><code>CREATE DATABASE library;
+USE library;
+
+CREATE TABLE authors (
+  author_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100),
+  country VARCHAR(50)
+);
+
+CREATE TABLE books (
+  book_id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(150),
+  genre VARCHAR(50),
+  author_id INT,
+  FOREIGN KEY (author_id) REFERENCES authors(author_id)
+);
+
+INSERT INTO authors (name, country) VALUES
+('J.K. Rowling', 'UK'),
+('George Orwell', 'UK'),
+('Mark Twain', 'USA');
+
+INSERT INTO books (title, genre, author_id) VALUES
+('Harry Potter and the Sorcerer''s Stone', 'Fantasy', 1),
+('1984', 'Dystopian', 2),
+('Animal Farm', 'Satire', 2),
+('The Adventures of Tom Sawyer', 'Adventure', 3);
+</code></pre>
+
+      <div class="note">
+        ⚠️ For production, use strong passwords and limit user access via
+        security groups instead of public access.
+      </div>
+
+      <h3>6.2 Create Target Database (RDS)</h3>
+      <ul>
+        <li>Engine: MySQL or Aurora</li>
+        <li>Instance class: appropriate for workload</li>
+        <li>Multi-AZ, encryption, automated backups enabled</li>
+        <li>Security group allows DMS replication</li>
+      </ul>
+
+      <h3>6.3 Create DMS Replication Instance</h3>
+      <ul>
+        <li>Name: dms-replication-instance</li>
+        <li>Multi-AZ recommended for production</li>
+        <li>Security group allows access from source database</li>
+      </ul>
+
+      <h3>6.4 Create Source & Target Endpoints</h3>
+      <ul>
+        <li>Provide host, port, username, password</li>
+        <li>Use SSL if possible</li>
+        <li>Test endpoint connection before starting migration</li>
+      </ul>
+
+      <h3>6.5 Create Migration Task</h3>
+      <ul>
+        <li>Define tables and schemas to migrate</li>
+        <li>Select migration type: Full Load / CDC / Full Load + CDC</li>
+        <li>Map schemas and transform data types if needed</li>
+      </ul>
+
+      <h3>6.6 Monitor Migration Task</h3>
+      <ul>
+        <li>Use DMS console & CloudWatch metrics</li>
+        <li>Track throughput, latency, and errors</li>
+        <li>Validate data consistency after migration</li>
+      </ul>
+
+      <h2 id="monitoring">7️⃣ Monitoring & Validation</h2>
+      <ul>
+        <li>CloudWatch metrics: replication instance CPU, memory, storage</li>
+        <li>CloudWatch logs: task errors and warnings</li>
+        <li>Validate row counts, checksums, and key statistics</li>
+      </ul>
+
+      <h2 id="best-practices">8️⃣ Best Practices</h2>
+      <ul>
+        <li>Use SCT for heterogeneous migrations</li>
+        <li>Enable Multi-AZ & encryption</li>
+        <li>Use CDC for minimal downtime</li>
+        <li>
+          Secure network access with private subnets or VPN/Direct Connect
+        </li>
+        <li>Provision sufficient replication instance resources</li>
+        <li>Enable CloudWatch logs & alarms</li>
+        <li>Test migration in Dev/QA before production cutover</li>
+      </ul>
+
+      <h2 id="references">9️⃣ References</h2>
+      <ul>
+        <li>
+          <a
+            href="https://docs.aws.amazon.com/dms/latest/userguide/Welcome.html"
+            target="_blank"
+            >AWS DMS Documentation</a
+          >
+        </li>
+        <li>
+          <a
+            href="https://aws.amazon.com/dms/schema-conversion-tool/"
+            target="_blank"
+            >AWS Schema Conversion Tool (SCT)</a
+          >
+        </li>
+        <li>
+          <a href="https://aws.amazon.com/blogs/database/" target="_blank"
+            >AWS Database Migration Blogs</a
+          >
+        </li>
+      </ul>
+
+      <a class="back-btn" href="blog.html">← Back to Blogs</a>
+    </section>
+
+    <footer style="text-align: center; margin: 30px 0; color: #555">
+      &copy; 2025 Bishal Dhimal |
+      <a href="mailto:bishaldhimal321@gmail.com">bishaldhimal321@gmail.com</a>
+    </footer>
+
+    <script>
+      document.addEventListener("contextmenu", (e) => e.preventDefault());
+      document.addEventListener("keydown", (e) => {
+        if (e.ctrlKey && ["c", "C", "s", "S", "u", "U"].includes(e.key))
+          e.preventDefault();
+      });
+      document.addEventListener("dragstart", (e) => e.preventDefault());
+    </script>
+  </body>
+</html>

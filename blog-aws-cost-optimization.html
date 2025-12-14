@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AWS Cost Optimization - Blog | Bishal Dhimal</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .blog-content {
+        max-width: 900px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        line-height: 1.7;
+      }
+      .blog-content h1,
+      .blog-content h2,
+      .blog-content h3 {
+        margin-top: 30px;
+      }
+      .toc {
+        background: #f7f7f7;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+      }
+      .toc a {
+        display: block;
+        margin-bottom: 8px;
+        color: #0077cc;
+        text-decoration: none;
+      }
+      .toc a:hover {
+        text-decoration: underline;
+      }
+      .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        color: #0077cc;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      .back-btn:hover {
+        text-decoration: underline;
+      }
+      .actions,
+      .best-practices {
+        margin-left: 20px;
+        margin-bottom: 20px;
+      }
+      .section-separator {
+        border-top: 2px solid #0077cc;
+        margin: 30px 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <section class="blog-content">
+      <h1>AWS Cost Optimization: Detailed Steps</h1>
+      <p><em>By Bishal Dhimal | Dec 2025</em></p>
+
+      <div class="toc">
+        <strong>📌 Table of Contents</strong>
+        <a href="#step1">1. Review AWS Billing & Cost Management Dashboard</a>
+        <a href="#step2">2. Identify High-Cost Services</a>
+        <a href="#step3">3. Analyze Unused or Underused Resources</a>
+        <a href="#step4">4. Review Reserved Instances vs On-Demand</a>
+        <a href="#step5">5. Evaluate Auto Scaling Configuration</a>
+        <a href="#step6">6. Move to Spot Instances</a>
+        <a href="#step7">7. Review EC2 Instance Types & Sizes</a>
+        <a href="#step8">8. Utilize S3 Storage Classes Efficiently</a>
+        <a href="#step9">9. Optimize Data Transfer Costs</a>
+        <a href="#step10">10. Consolidate AWS Accounts</a>
+        <a href="#step11">11. Review RDS Instance & Storage Costs</a>
+        <a href="#rds">RDS Detailed Optimization</a>
+      </div>
+
+      <!-- Step 1 -->
+      <h2 id="step1">1. Review the AWS Billing & Cost Management Dashboard</h2>
+      <div class="actions">
+        <strong>Detailed Actions:</strong>
+        <ul>
+          <li>
+            Go to the Cost Explorer and filter costs by service, region, and
+            time.
+          </li>
+          <li>
+            Use Cost Allocation Tags to categorize and allocate costs to
+            departments or projects.
+          </li>
+          <li>Set up AWS Budgets with thresholds for notifications.</li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <strong>Best Practices:</strong>
+        <ul>
+          <li>
+            Set monthly budgets and daily alerts to prevent surprise billing.
+          </li>
+        </ul>
+      </div>
+
+      <!-- Step 2 -->
+      <h2 id="step2">2. Identify High-Cost Services</h2>
+      <div class="actions">
+        <strong>Detailed Actions:</strong>
+        <ul>
+          <li>
+            Check Cost Explorer for EC2, RDS, Lambda, and S3 to identify
+            high-cost services.
+          </li>
+          <li>
+            Drill down by regions and accounts for detailed spending analysis.
+          </li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <strong>Best Practices:</strong>
+        <ul>
+          <li>
+            Use Cost Anomaly Detection for early warnings of unexpected cost
+            spikes.
+          </li>
+        </ul>
+      </div>
+
+      <!-- Step 3 -->
+      <h2 id="step3">3. Analyze Unused or Underused Resources</h2>
+      <div class="actions">
+        <strong>Detailed Actions:</strong>
+        <ul>
+          <li>
+            Use AWS Trusted Advisor to detect idle EC2 instances, unattached EBS
+            volumes, or unused Elastic IPs.
+          </li>
+          <li>Rightsize EC2 instances based on utilization recommendations.</li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <strong>Best Practices:</strong>
+        <ul>
+          <li>
+            Implement auto-scaling to dynamically adjust resources based on
+            demand.
+          </li>
+        </ul>
+      </div>
+
+      <!-- Step 4 -->
+      <h2 id="step4">4. Review Reserved Instances vs On-Demand</h2>
+      <div class="actions">
+        <strong>Detailed Actions:</strong>
+        <ul>
+          <li>
+            Check RI Utilization and Coverage reports to ensure value from
+            Reserved Instances.
+          </li>
+          <li>
+            Switch steady workloads to Reserved Instances or Savings Plans for
+            up to 75% savings.
+          </li>
+          <li>
+            Evaluate which workloads should remain on On-Demand for flexibility.
+          </li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <strong>Best Practices:</strong>
+        <ul>
+          <li>
+            Use Convertible RIs for flexibility to change instance type, family,
+            or OS.
+          </li>
+        </ul>
+      </div>
+
+      <!-- Steps 5-11 -->
+      <h2 id="step5">5. Evaluate Auto Scaling Configuration</h2>
+      <div class="actions">
+        <ul>
+          <li>
+            Review Auto Scaling Groups and policies based on CPU, memory, etc.
+          </li>
+          <li>Schedule scaling for off-peak hours.</li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <ul>
+          <li>
+            Combine Auto Scaling with Spot Instances for non-critical workloads.
+          </li>
+        </ul>
+      </div>
+
+      <h2 id="step6">6. Move to Spot Instances</h2>
+      <div class="actions">
+        <ul>
+          <li>
+            Use Spot Instances for non-production workloads for up to 90%
+            savings.
+          </li>
+          <li>
+            Distribute workloads using EC2 Spot Fleet or Auto Scaling with Spot.
+          </li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <ul>
+          <li>
+            Ensure fault tolerance and checkpointing as Spot Instances can be
+            terminated unexpectedly.
+          </li>
+        </ul>
+      </div>
+
+      <h2 id="step7">7. Review EC2 Instance Types & Sizes</h2>
+      <div class="actions">
+        <ul>
+          <li>Use Compute Optimizer to identify over-provisioned instances.</li>
+          <li>
+            Consider Graviton-based instances for better price/performance.
+          </li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <ul>
+          <li>Monitor instances via CloudWatch to ensure proper sizing.</li>
+        </ul>
+      </div>
+
+      <h2 id="step8">8. Utilize S3 Storage Classes Efficiently</h2>
+      <div class="actions">
+        <ul>
+          <li>Move infrequently accessed data to S3 IA or Glacier.</li>
+          <li>
+            Implement Lifecycle Policies to transition data automatically.
+          </li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <ul>
+          <li>Enable S3 Intelligent-Tiering for unknown access patterns.</li>
+        </ul>
+      </div>
+
+      <h2 id="step9">9. Optimize Data Transfer Costs</h2>
+      <div class="actions">
+        <ul>
+          <li>
+            Review cross-region/availability zone transfers; consolidate
+            resources.
+          </li>
+          <li>Use CloudFront to reduce origin data transfer costs.</li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <ul>
+          <li>
+            Use VPC Peering or AWS Transit Gateway to reduce cross-region costs.
+          </li>
+        </ul>
+      </div>
+
+      <h2 id="step10">10. Consolidate AWS Accounts</h2>
+      <div class="actions">
+        <ul>
+          <li>
+            Use AWS Organizations to consolidate billing and achieve volume
+            discounts.
+          </li>
+          <li>Organize accounts by department, project, or business unit.</li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <ul>
+          <li>
+            Use Service Control Policies (SCPs) to manage permissions and
+            compliance.
+          </li>
+        </ul>
+      </div>
+
+      <h2 id="step11">11. Review RDS Instance & Storage Costs</h2>
+      <div class="actions">
+        <ul>
+          <li>Analyze RDS instances for right-sizing.</li>
+          <li>Use Amazon Aurora for cost-effective scalability.</li>
+          <li>
+            Review storage and backups; enable auto-scaling and delete
+            unnecessary snapshots.
+          </li>
+        </ul>
+      </div>
+
+      <div class="section-separator"></div>
+
+      <h2 id="rds">RDS Detailed Optimization</h2>
+
+      <h3>1. Evaluate RDS Instance Types and Sizes</h3>
+      <div class="actions">
+        <ul>
+          <li>
+            Use Compute Optimizer and Trusted Advisor to identify underutilized
+            instances.
+          </li>
+          <li>
+            Consider switching to better instance families or Graviton-based
+            instances.
+          </li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <ul>
+          <li>Monitor CPU, memory, disk I/O using CloudWatch.</li>
+          <li>
+            Enable RDS Auto Scaling to adjust instance size automatically.
+          </li>
+        </ul>
+      </div>
+
+      <h3>2. Consider Amazon Aurora</h3>
+      <div class="actions">
+        <ul>
+          <li>
+            Migrate MySQL/PostgreSQL workloads to Amazon Aurora for
+            price/performance benefits.
+          </li>
+          <li>
+            Use Aurora Serverless for variable workloads to pay only for what
+            you use.
+          </li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <ul>
+          <li>
+            Evaluate performance using AWS Pricing Calculator for potential
+            savings.
+          </li>
+        </ul>
+      </div>
+
+      <h3>3. Optimize RDS Storage Costs</h3>
+      <div class="actions">
+        <ul>
+          <li>
+            Switch to General Purpose SSD if Provisioned IOPS is not required.
+          </li>
+          <li>Delete old snapshots and backup files.</li>
+          <li>Enable Storage Auto Scaling to avoid over-provisioning.</li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <ul>
+          <li>Set retention periods for backups and snapshots.</li>
+          <li>
+            Use Performance Insights to monitor and optimize storage usage.
+          </li>
+        </ul>
+      </div>
+
+      <h3>4. Use Reserved DB Instances (RIs)</h3>
+      <div class="actions">
+        <ul>
+          <li>Switch predictable workloads to Reserved DB Instances.</li>
+          <li>Use Convertible RIs for flexibility during the term.</li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <ul>
+          <li>
+            Track RI utilization to ensure reservations match actual usage.
+          </li>
+        </ul>
+      </div>
+
+      <h3>5. Optimize Backup & Snapshot Retention</h3>
+      <div class="actions">
+        <ul>
+          <li>
+            Review backup retention policies and reduce unnecessary retention.
+          </li>
+          <li>
+            Delete old manual snapshots and optimize cross-region backup
+            strategy.
+          </li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <ul>
+          <li>
+            Set up lifecycle policies to delete outdated backups automatically.
+          </li>
+          <li>Schedule backups during off-peak hours.</li>
+        </ul>
+      </div>
+
+      <h3>6. Use Multi-AZ Only When Needed</h3>
+      <div class="actions">
+        <ul>
+          <li>Evaluate high availability needs before enabling Multi-AZ.</li>
+          <li>For non-production environments, use Single-AZ to save costs.</li>
+        </ul>
+      </div>
+
+      <h3>7. Utilize Read Replicas</h3>
+      <div class="actions">
+        <ul>
+          <li>Implement Read Replicas to scale read-heavy workloads.</li>
+          <li>
+            Optimize replica location to reduce latency and data transfer costs.
+          </li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <ul>
+          <li>
+            Monitor replica lag and use Auto Scaling for replicas if needed.
+          </li>
+        </ul>
+      </div>
+
+      <h3>8. Analyze Performance with Performance Insights</h3>
+      <div class="actions">
+        <ul>
+          <li>
+            Enable Performance Insights to identify bottlenecks and high-latency
+            queries.
+          </li>
+          <li>Optimize database queries to avoid over-provisioning.</li>
+        </ul>
+      </div>
+      <div class="best-practices">
+        <ul>
+          <li>
+            Regularly review query performance and wait times to optimize costs.
+          </li>
+        </ul>
+      </div>
+
+      <a class="back-btn" href="blog.html">← Back to Blogs</a>
+    </section>
+
+    <footer>
+      <p>
+        &copy; 2025 Bishal Dhimal |
+        <a href="mailto:bishaldhimal321@gmail.com">bishaldhimal321@gmail.com</a>
+      </p>
+    </footer>
+
+    <script>
+      document.addEventListener("contextmenu", (e) => e.preventDefault());
+      document.addEventListener("keydown", (e) => {
+        if (e.ctrlKey && ["c", "C", "s", "S", "u", "U"].includes(e.key))
+          e.preventDefault();
+      });
+      document.addEventListener("dragstart", (e) => e.preventDefault());
+    </script>
+  </body>
+</html>

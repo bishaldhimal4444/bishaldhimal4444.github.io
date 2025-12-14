@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Migrating a Database to Amazon RDS | Bishal Dhimal</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .blog-content {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      line-height: 1.7;
+    }
+    .blog-content h1, .blog-content h2, .blog-content h3, .blog-content h4 {
+      margin-top: 30px;
+    }
+    .toc {
+      background: #f7f7f7;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+    }
+    .toc a {
+      display: block;
+      margin-bottom: 8px;
+      color: #0077cc;
+      text-decoration: none;
+    }
+    .toc a:hover {
+      text-decoration: underline;
+    }
+    pre {
+      background: #f0f0f0;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    button.collapsible {
+      background-color: #0077cc;
+      color: white;
+      cursor: pointer;
+      padding: 10px 15px;
+      width: 100%;
+      border: none;
+      text-align: left;
+      outline: none;
+      font-size: 14px;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    button.collapsible:hover {
+      background-color: #005fa3;
+    }
+    .content-collapsible {
+      display: none;
+      padding: 10px 0;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-top: 20px;
+      color: #0077cc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .back-btn:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<section class="blog-content">
+  <h1>Migrating a MariaDB Database to Amazon RDS</h1>
+  <p><em>By Bishal Dhimal | Dec 2025</em></p>
+
+  <div class="toc">
+    <strong>📌 Table of Contents</strong>
+    <a href="#objectives">Objectives</a>
+    <a href="#step1">Step 1: Create an RDS Database Instance</a>
+    <a href="#step2">Step 2: Export Data Using mysqldump</a>
+    <a href="#step3">Step 3: Connect a SQL Client to RDS</a>
+    <a href="#step4">Step 4: Migrate Data to RDS</a>
+    <a href="#step5">Step 5: Configure Web Application</a>
+    <a href="#mysql-setup">Optional: MySQL Setup on EC2</a>
+    <a href="#references">References</a>
+  </div>
+
+  <h2 id="objectives">Objectives</h2>
+  <ul>
+    <li>Create an RDS database instance.</li>
+    <li>Export data from a MariaDB database using <code>mysqldump</code>.</li>
+    <li>Connect a SQL client to an RDS database.</li>
+    <li>Migrate data from a MariaDB database on EC2 to RDS.</li>
+    <li>Update a web application to use the new RDS database.</li>
+  </ul>
+
+  <h2 id="step1">1️⃣ Step 1: Create an RDS Database Instance</h2>
+  <p>
+    In the AWS Management Console:
+  </p>
+  <ul>
+    <li>Go to RDS → Databases → Create database.</li>
+    <li>Select Engine: MariaDB/MySQL.</li>
+    <li>Choose Template: Free-tier (for testing) or Production (for prod workloads).</li>
+    <li>Set DB instance identifier (e.g., <code>prod-rds-db</code>).</li>
+    <li>Configure VPC, Subnet Group, and Security Groups for network access.</li>
+    <li>Enable Public Access if required and configure backup, encryption, and monitoring as per production best practices.</li>
+  </ul>
+
+  <h2 id="step2">2️⃣ Step 2: Export Data from MariaDB Using mysqldump</h2>
+  <p>On the EC2 instance hosting MariaDB:</p>
+  <pre><code>
+mysqldump --databases <db_name> -u <user_name> -p > /path/to/db_backup.sql
+  </code></pre>
+  <p><strong>Tips:</strong> Use the <code>--single-transaction</code> flag for InnoDB tables to avoid locking.</p>
+
+  <h2 id="step3">3️⃣ Step 3: Connect a SQL Client to RDS</h2>
+  <pre><code>
+# Connect using hostname
+mysql -h <rds_endpoint> -u <user_name> -p
+
+# Or
+mysql --hostname <rds_endpoint> -u <user_name> -p
+  </code></pre>
+  <p>Ensure your RDS security group allows inbound traffic from your client IP.</p>
+
+  <h2 id="step4">4️⃣ Step 4: Migrate Data to RDS</h2>
+  <p>Restore the database backup to RDS:</p>
+  <pre><code>
+# Option 1: From within mysql client
+mysql -u <user_name> -p -h <rds_endpoint>
+CREATE DATABASE <db_name>;
+USE <db_name>;
+SOURCE /path/to/db_backup.sql;
+
+# Option 2: Direct import from shell
+mysql -u <user_name> -p -h <rds_endpoint> < <path/to/db_backup.sql>
+  </code></pre>
+  <p><strong>Production tips:</strong></p>
+  <ul>
+    <li>Use parameterized transactions for large datasets.</li>
+    <li>Consider <code>aws s3 cp</code> to upload the dump to S3 and then import using EC2 with higher network throughput.</li>
+    <li>Verify row counts and indexes after import.</li>
+  </ul>
+
+  <h2 id="step5">5️⃣ Step 5: Configure Web Application</h2>
+  <ul>
+    <li>Update your web application's configuration to point to the new RDS endpoint.</li>
+    <li>Use AWS Secrets Manager to securely store database credentials.</li>
+    <li>Stop the old MariaDB service on EC2 to prevent accidental writes:
+      <pre><code>sudo systemctl stop mariadb</code></pre>
+    </li>
+    <li>Test application functionality and connection.</li>
+  </ul>
+
+  <h2 id="mysql-setup">Optional: Install & Configure MySQL on EC2</h2>
+  <p>Useful if you need a local test environment before migrating:</p>
+
+  <button class="collapsible">Show/Hide MySQL Installation & Setup</button>
+  <div class="content-collapsible">
+    <pre><code>
+# Install MySQL
+sudo apt update
+sudo apt install mysql-server -y
+
+# Secure installation
+sudo mysql_secure_installation
+
+# Create a new MySQL user
+sudo mysql -u root -p
+CREATE USER '<new_user>'@'%' IDENTIFIED BY '<password>';
+GRANT ALL PRIVILEGES ON *.* TO '<new_user>'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+EXIT;
+
+# Configure MySQL to allow remote access
+sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+# Change: bind-address = 127.0.0.1 → bind-address = 0.0.0.0
+
+# Restart MySQL service
+sudo systemctl restart mysql
+
+# Test connection locally
+mysql -u <new_user> -p
+
+# Test connection remotely (if remote access enabled)
+mysql -u <new_user> -h <ec2-public-ip> -p
+    </code></pre>
+  </div>
+
+  <h2 id="references">References</h2>
+  <ul>
+    <li><a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html" target="_blank">Amazon RDS Documentation</a></li>
+    <li><a href="https://dev.mysql.com/doc/refman/8.0/en/mysqldump.html" target="_blank">mysqldump Documentation</a></li>
+    <li><a href="https://aws.amazon.com/blogs/database/migrating-mysql-databases-to-amazon-rds/" target="_blank">AWS Blog: Migrating MySQL to RDS</a></li>
+  </ul>
+
+  <a class="back-btn" href="blog.html">← Back to Blogs</a>
+</section>
+
+<footer>
+  <p>
+    &copy; 2025 Bishal Dhimal | 
+    <a href="mailto:bishaldhimal321@gmail.com">bishaldhimal321@gmail.com</a>
+  </p>
+</footer>
+
+<script>
+  const coll = document.getElementsByClassName("collapsible");
+  for (let i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function () {
+      this.classList.toggle("active");
+      const content = this.nextElementSibling;
+      if (content.style.display === "block") {
+        content.style.display = "none";
+      } else {
+        content.style.display = "block";
+      }
+    });
+  }
+
+  // Disable right-click and copy
+  document.addEventListener("contextmenu", e => e.preventDefault());
+  document.addEventListener("keydown", e => {
+    if(e.ctrlKey && ["c","C","s","S","u","U"].includes(e.key)) e.preventDefault();
+  });
+  document.addEventListener("dragstart", e => e.preventDefault());
+</script>
+
+</body>
+</html>
