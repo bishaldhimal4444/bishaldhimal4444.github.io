@@ -1,0 +1,110 @@
+/* =========================
+   Base Layout
+========================= */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #fbf6df;
+  color: #000;
+}
+
+/* =========================
+   Header
+========================= */
+.site-header {
+  text-align: center;
+  margin: 25px 0;
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.tagline {
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+/* =========================
+   Bars (archive.today style)
+========================= */
+.bar {
+  max-width: 900px;
+  margin: 15px auto;
+  padding: 15px 20px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.red-bar {
+  background: #b30000;
+  color: #fff;
+}
+
+.dark-bar {
+  background: #1f2d3d;
+  color: #fff;
+}
+
+.bar-title {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.bar-content {
+  background: #ffffff;
+  color: #000;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.bar-content ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+/* =========================
+   Links
+========================= */
+a {
+  color: #0000cc;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   Footer
+========================= */
+.site-footer {
+  text-align: center;
+  font-size: 12px;
+  margin: 25px 0;
+  color: #333;
+}
+
+/* =========================
+   Mobile Adjustments
+========================= */
+@media (max-width: 600px) {
+  .bar {
+    margin: 12px 10px;
+  }
+
+  .site-header h1 {
+    font-size: 24px;
+  }
+}
